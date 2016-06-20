@@ -3,7 +3,6 @@ from .. import design_and_response
 import pandas
 import numpy as np
 
-
 class TestDesignResponse(unittest.TestCase):
 
     def setup_above_delt_max(self):
@@ -72,6 +71,7 @@ class TestDesignResponse(unittest.TestCase):
 
     def test_response_matrix_steady_state_above_delt_max(self):
         ds, resp = self.setup_above_delt_max()
+        self.assertEqual(list(resp.columns), ['ts4', 'ss', 'ts1', 'ts2'])
         self.assertEqual(list(resp['ts4']), list(self.exp['ts4']))
         self.assertEqual(list(resp['ss']), list(self.exp['ss']))
 
