@@ -110,16 +110,6 @@ class TestDesignResponse(unittest.TestCase):
         for col in ds:
             self.assertEqual(list(ds[col]), list(self.exp['ts1']), 
                 msg = '{} column in the design matrix should be equal to the branching source, ts1, in the exp matrix'.format(col))
-            
-    def test_design_matrix_branching_time_series(self):
-        ds, resp = self.setup_branching_time_series()
-
-        self.assertEqual(ds.shape, (3, 2))
-        self.assertEqual(list(ds.columns), ['ts1_dupl01', 'ts1_dupl02'],
-             msg = 'This is how the R code happens to name branching time series')
-        for col in ds:
-            self.assertEqual(list(ds[col]), list(self.exp['ts1']), 
-                msg = '{} column in the design matrix should be equal to the branching source, ts1, in the exp matrix'.format(col))
 
     def test_response_matrix_branching_time_series(self):
         ds, resp = self.setup_branching_time_series()
@@ -133,6 +123,3 @@ class TestDesignResponse(unittest.TestCase):
 
         np.testing.assert_almost_equal(np.array(resp['ts1_dupl01']), expected_response_1)
         np.testing.assert_almost_equal(np.array(resp['ts1_dupl02']), expected_response_2)
-
-
-
