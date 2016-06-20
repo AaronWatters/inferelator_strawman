@@ -1,4 +1,4 @@
-source('design_and_response.R')
+source('legacy/design_and_response.R')
 
 meta.data <- read.table('meta_data.csv', sep = ',', header = 1, row.names = 1)
 exp.mat <- read.table('exp_mat.csv', sep = ',', header = 1, row.names = 1)
