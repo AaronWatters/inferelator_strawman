@@ -42,6 +42,8 @@ class Legacy_Design_Response_Driver:
 			configfile.write('tau <- {}'.format(tau))
 
 	def convert_to_R_df(self, df):
+		# This handles R <-> python incongruencies. 
+		# For example True and False need to be converted to TRUE and FALSE
 		new_df = pandas.DataFrame(df)
 		for col in new_df:
 			if new_df[col].dtype == 'bool':
