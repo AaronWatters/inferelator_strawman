@@ -72,7 +72,7 @@ class TestDesignResponse(unittest.TestCase):
 		np.testing.assert_almost_equal(np.array(resp['ts1']), expected_response_1)
 		np.testing.assert_almost_equal(np.array(resp['ts2']), expected_response_2)
 
-	def test_design_matrix_below_delt_min(self):
+	def test_response_matrix_below_delt_min(self):
 		ds, resp = self.setup_below_delt_min()
 
 		expression_1 = np.array(list(self.exp['ts1']))
@@ -80,7 +80,7 @@ class TestDesignResponse(unittest.TestCase):
 		expected_response_1 = expression_1 + self.tau * (expression_3 - expression_1) /  (float(self.meta['del.t'][1]) + float(self.meta['del.t'][2]))
 		np.testing.assert_almost_equal(np.array(resp['ts1']), expected_response_1)
 
-	def test_design_matrix_below_delt_min(self):
+	def test_design_matrix_headers_below_delt_min(self):
 		ds, resp = self.setup_below_delt_min()
 		print ds.columns
   		self.assertEqual(list(ds.columns), ['ss', 'ts1', 'ts2', 'ts3'], 
