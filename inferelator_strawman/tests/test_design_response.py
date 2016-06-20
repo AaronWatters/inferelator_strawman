@@ -7,7 +7,8 @@ import numpy as np
 class TestDesignResponse(unittest.TestCase):
 
 
-	def test_nothing(self):
+	def test_design_and_response(self):
+		# Set up variables 
 		meta = pandas.DataFrame()
 		meta['isTs']=[True, True, True, True, False]
   		meta['is1stLast'] = ['f','m','m','l','e']
@@ -22,14 +23,24 @@ class TestDesignResponse(unittest.TestCase):
 		delT_max = 4
 		tau = 2
 
-  		print meta
   		ds, resp = design_and_response.Legacy_Design_Response_Driver().get_design_response(exp, meta, delT_min, delT_max, tau)
   		print ds
   		print resp
-		self.assertEqual(ds.shape, (2, 4))
-		self.assertEqual(list(ds['ts4']), [4, 9])
+  		self.assertEqual(ds.shape, (2, 4))
+  		self.assertEqual(list(ds.columns), ['ts4', 'ss', 'ts1', 'ts2'], 
+			msg = "Guarantee that the ts3 condition is dropped, since its delT of 5 is greater than delt_max of 4")
+  		for col in ds:
+  			self.assertEqual(list(ds[col]), list(exp[col]), 
+  				msg = '{} column in the design matrix should be equal to that column in the expression matrix'.format(col))
+
+		self.assertEqual(list(resp['ts4']), [4, 9])
+
 		self.assertEqual(list(ds['ss']), [5, 10])
-		self.assertEqual(list(resp['ts1']), [2.333333, 7.333333])
+		self.assertEqual(list(ds['ss']), list(resp['ss']), msg = 'Steady State design and response should be equal')
+		self.assertEqual(list(resp['ts2']), list(exp['ts3']))
+		self.assertEqual(list(resp['ts1']), list(exp['ts2']), 
+			msg = 'In a time series the response should be the expression data at time t + 1')
+
 
 
 	def test_num_columns_design_response(self):
