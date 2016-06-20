@@ -5,23 +5,35 @@ import configparser
 
 class Legacy_Design_Response_Driver:
 
+	legacy_directory = 'legacy'
+
 	def get_design_response(self, exp_mat, meta_data, delT_min, delT_max, tau):
 		# Change the current working directory
 		cwd = os.getcwd()
-		new_dir = os.path.dirname(os.path.abspath(__file__))
-		os.chdir(new_dir)
-		self.convert_to_R_df(meta_data)
-		self.write_hyperparams(delT_min, delT_max, tau)
-		exp_mat.to_csv('exp_mat.csv')
-		meta_data.to_csv('meta_data.csv')
+		try:
+			new_dir = os.path.dirname(os.path.abspath(__file__))
+			os.chdir(new_dir)
+			self.convert_to_R_df(meta_data)
+			self.write_hyperparams(delT_min, delT_max, tau)
+			exp_mat.to_csv('exp_mat.csv')
+			meta_data.to_csv('meta_data.csv')
+	
+			subprocess.call(['R', '-f', './design_and_response_driver.R'])
+			final_design = pandas.read_csv('design.tsv', sep='\t')
+			final_response = pandas.read_csv('response.tsv', sep='\t')
+		finally:
+			# restore the current directory
+			self.clean_up()
+			os.chdir(cwd)
 
-		subprocess.call(['R', '-f', './design_and_response_driver.R'])
-		final_design = pandas.read_csv('design.tsv', sep='\t')
-		final_response = pandas.read_csv('response.tsv', sep='\t')
-
-		# restored the current directory
-		os.chdir(cwd)
 		return (final_design, final_response)
+
+	def clean_up(self):
+		os.remove('params.cfg')
+		os.remove('meta_data.csv')
+		os.remove('exp_mat.csv')
+		os.remove('design.tsv')
+		os.remove('response.tsv')
 
 	def write_hyperparams(self, delT_min, delT_max, tau):
 		with open('params.cfg', 'w') as configfile:
